@@ -109,7 +109,11 @@ class Ui_MainWindow(object):
         self.actionCreate_DT.triggered.connect(self.runDT)
         self.actionCreate_contour_lines.triggered.connect(self.runContourLines)
         self.actionAnalyze_slope.triggered.connect(self.runSlope)
+        self.actionAnalyze_aspect.triggered.connect(self.runAspect)
         self.actionOpen.triggered.connect(self.Open)
+        self.actionExit.triggered.connect(self.exit)
+        self.actionClear_all.triggered.connect(self.Clear_data)
+        self.actionClear_results.triggered.connect(self.Clear_analysis)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -156,6 +160,7 @@ class Ui_MainWindow(object):
         zmin = 0
         zmax = 1650
         dz = 50
+        DZ = dz*5
 
         # Get DT
         dt = self.Canvas.getDT()
@@ -163,8 +168,9 @@ class Ui_MainWindow(object):
         #Create contour lines
         a = Algorithms()
         contours = a.createContourLines(dt, zmin, zmax, dz)
+        Tcontours = a.createContourLines(dt, zmin, zmax, DZ)
         #Set resulzs to draw
-        self.Canvas.setContours(contours)
+        self.Canvas.setContours(contours,Tcontours)
         self.Canvas.repaint()
 
     def runSlope(self):
@@ -180,9 +186,32 @@ class Ui_MainWindow(object):
         self.Canvas.setSlope(dtm)
         self.Canvas.repaint()
 
+    def runAspect(self):
+        # Get DT
+        dt = self.Canvas.getDT()
+
+        # Create contour lines
+        a = Algorithms()
+        dtm = a.analyzeAspect(dt)
+
+        # Set resulzs to draw
+        self.Canvas.setAspect(dtm)
+        self.Canvas.repaint()
+
     def Open(self):
         ui.Canvas.clearLoadedData()
         self.Canvas.input()
+        self.Canvas.repaint()
+
+    def exit(self):
+        quit()
+
+    def Clear_data(self):
+        ui.Canvas.clearLoadedData()
+        self.Canvas.repaint()
+
+    def Clear_analysis(self):
+        ui.Canvas.clearAnalysis()
         self.Canvas.repaint()
 
 if __name__ == "__main__":

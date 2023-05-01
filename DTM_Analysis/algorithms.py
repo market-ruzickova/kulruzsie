@@ -564,7 +564,47 @@ class Algorithms:
         #Return analyzed DTM
         return dtm
 
+    def getAspect(self, p1:QPoint3DF, p2:QPoint3DF, p3:QPoint3DF):
+        # Get triangle aspect
+        # First vector
+        ux = p2.x() - p1.x()
+        uy = p2.y() - p1.y()
+        uz = p2.getZ() - p1.getZ()
 
+        # Second vector
+        vx = p3.x() - p1.x()
+        vy = p3.y() - p1.y()
+        vz = p3.getZ() - p1.getZ()
+
+        # Normal vector, components
+        nx = uy * vz - vy * uz
+        ny = -(ux * vz - uz * vx)
+        nz = ux * vy - vx * uy
+
+        #aspect
+        a = atan2(nx, ny)
+        return a
+
+    def analyzeAspect(self, dt:list[Edge]):
+        dtm: list[Triangle] = []
+
+        # Process all triangles
+        for i in range(0, len(dt), 3):
+            # Get triangle vertices
+            p1 = dt[i].getStart()
+            p2 = dt[i].getEnd()
+            p3 = dt[i + 1].getEnd()
+
+            # Compute slope
+            aspect = self.getAspect(p1, p2, p3)
+            # Create triangle
+            triangle = Triangle(p1, p2, p3, 0, aspect)
+
+            # Add triangle to the list
+            dtm.append(triangle)
+
+        # Return analyzed DTM
+        return dtm
 
 
 

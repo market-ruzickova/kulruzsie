@@ -28,6 +28,7 @@ class Generate:
         ym = 450
         min = 20
         max_points = 500
+        zm = 1000
         bord_a = QPoint3DF(min, min, random()*100)
         bord_b = QPoint3DF(min, ym, random()*100)
         bord_c = QPoint3DF(xm, min, random()*100)
@@ -53,7 +54,7 @@ class Generate:
         for i in range(s):
             xi = r.randint(min+50, xm-50)+random()*10
             yi = r.randint(min+50, ym-50)+random()*10
-            zi = random() * 1000
+            zi = random() * zm
             pi = QPoint3DF(xi, yi, zi)
             i_min = a.getNearestPoint(pi, self.points)
             #closest point

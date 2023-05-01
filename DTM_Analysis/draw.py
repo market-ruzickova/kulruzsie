@@ -8,7 +8,7 @@ from random import *
 import random
 from math import *
 from generate_data import *
-
+from algorithms import *
 class Draw(QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -18,8 +18,9 @@ class Draw(QWidget):
         self.__points : list[QPoint3DF] = []
         self.__dt : list[Edge] = []
         self.__contours: list[Edge] = []
+        self.__t_contours: list[Edge] = []
         self.__triangles: list[Triangle] = []
-        self.poiLoad = []
+        self.__triangles2: list[Triangle] = []
 
     def mousePressEvent(self, e:QMouseEvent):
         #Left mouse button click
@@ -61,11 +62,9 @@ class Draw(QWidget):
         for t in self.__triangles:
             #Get triangle slope
             slope = t.getSlope()
-
             #Convert to color
             col = 255 - int(slope * k)
-
-            #Create color
+            # Create color
             color = QColor(col, col, col)
             qp.setBrush(color)
 
@@ -75,6 +74,45 @@ class Draw(QWidget):
             #Draw polygon
             qp.drawPolygon(pol)
 
+        for t in self.__triangles2:
+            #Get triangle slope
+            aspect = t.getAspect()
+            #Convert to color
+
+            if aspect < -2*pi/3:
+                r = 255
+                g = 0
+                b = 0
+            elif aspect < -pi/3:
+                r = 255
+                g = 165
+                b = 0
+            elif aspect < 0:
+                r = 255
+                g = 255
+                b = 0
+            elif aspect < pi/3:
+                r = 0
+                g = 255
+                b = 0
+            elif aspect < 2*pi/3:
+                r = 0
+                g = 0
+                b = 255
+            else:
+                r = 255
+                g = 0
+                b = 255
+
+            # Create color
+            color = QColor(r, g, b)
+            qp.setBrush(color)
+
+            #Create polygon
+            pol = QPolygonF([t.getP1(), t.getP2(), t.getP3()])
+
+            #Draw polygon
+            qp.drawPolygon(pol)
         # Set attributes
         qp.setPen(Qt.GlobalColor.green)
 
@@ -89,7 +127,11 @@ class Draw(QWidget):
         for edge in self.__contours:
             qp.drawLine(int(edge.getStart().x()), int(edge.getStart().y()), int(edge.getEnd().x()), int(edge.getEnd().y()))
 
+        pen = QPen(Qt.GlobalColor.darkRed,2)
+        qp.setPen(pen)
 
+        for edge in self.__t_contours:
+            qp.drawLine(int(edge.getStart().x()), int(edge.getStart().y()), int(edge.getEnd().x()), int(edge.getEnd().y()))
 
         # Set attributes
         # qp.setPen(Qt.GlobalColor.blue)
@@ -101,11 +143,17 @@ class Draw(QWidget):
     def setDT(self, dt : list[Edge]):
         self.__dt = dt
 
-    def setContours(self, contours : list[Edge]):
+    def setContours(self, contours : list[Edge], Tcontours: list[Edge]):
         self.__contours = contours
+        self.__t_contours = Tcontours
 
     def setSlope(self, triangles : list[Triangle]):
+        self.__triangles2.clear()
         self.__triangles = triangles
+
+    def setAspect(self, triangles : list[Triangle]):
+        self.__triangles.clear()
+        self.__triangles2 = triangles
 
     def getPoints(self):
         return self.__points
@@ -125,5 +173,13 @@ class Draw(QWidget):
         self.__points.clear()
         self.__dt.clear()
         self.__contours.clear()
+        self.__t_contours.clear()
         self.__triangles.clear()
-        self.poiLoad.clear()
+        self.__triangles2.clear()
+
+    def clearAnalysis(self):
+        self.__dt.clear()
+        self.__contours.clear()
+        self.__triangles.clear()
+        self.__triangles2.clear()
+        self.__t_contours.clear()
