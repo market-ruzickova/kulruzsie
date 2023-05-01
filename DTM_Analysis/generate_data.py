@@ -27,8 +27,15 @@ class Generate:
         xm = 750
         ym = 450
         min = 20
+
+        #inicialize maximum number of points, maximum height
         max_points = 500
         zm = 1000
+
+        #set number of starting points
+        s = 4
+
+        #set z on borders to random low altitude
         bord_a = QPoint3DF(min, min, random()*100)
         bord_b = QPoint3DF(min, ym, random()*100)
         bord_c = QPoint3DF(xm, min, random()*100)
@@ -46,11 +53,11 @@ class Generate:
         for i in range (min,xm,100):
             x = QPoint3DF(i, ym, QPoint3DF.getZ(bord_b)+((i-min)/(xm-min))*(QPoint3DF.getZ(bord_d)-QPoint3DF.getZ(bord_b)))
             self.points.append(x)
+
+
         a = Algorithms()
 
-        # Incialize number of starting points
-
-        s = 4
+        #create random default higher altitudes in the field
         for i in range(s):
             xi = r.randint(min+50, xm-50)+random()*10
             yi = r.randint(min+50, ym-50)+random()*10
@@ -62,7 +69,9 @@ class Generate:
             d = sqrt((cl_p.x() - pi.x()) ** 2 + (cl_p.y() - pi.y()) ** 2)
             if d > 20:
                 self.points.append(pi)
-        n = s+4
+
+        # create random points in field with spatial relationship to 3 surrounding points
+        n = s+4+2*int((xm-min)/100)+2*int((ym-min)/100)
         while n < max_points:
             x0 = r.randint(min+20, xm-20)+random()*10
             y0 = r.randint(min+20, ym-20)+random()*10

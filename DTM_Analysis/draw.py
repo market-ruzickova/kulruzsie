@@ -77,8 +77,7 @@ class Draw(QWidget):
         for t in self.__triangles2:
             #Get triangle slope
             aspect = t.getAspect()
-            #Convert to color
-
+            #colorize
             if aspect < -2*pi/3:
                 r = 255
                 g = 0
@@ -104,6 +103,17 @@ class Draw(QWidget):
                 g = 0
                 b = 255
 
+            # Shadow
+            """
+            if aspect < 0:
+                r = int(255*(aspect+pi)/pi)
+                g = r
+                b = r
+            else:
+                r = int(255*(-aspect+pi)/pi)
+                g = r
+                b = r
+            """
             # Create color
             color = QColor(r, g, b)
             qp.setBrush(color)
