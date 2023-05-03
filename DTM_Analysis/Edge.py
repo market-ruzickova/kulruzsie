@@ -21,4 +21,8 @@ class Edge:
         #Compare two edges
         return (self.__start == other.__start) and (self.__end == other.__end)
 
+    def __lt__(self, other):
+        return self.__start.getZ() < other.__start.getZ()
 
+    def __gt__(self, other):
+        return self.__start.getZ() > other.__start.getZ()

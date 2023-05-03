@@ -6,6 +6,7 @@ from math import *
 from QPoint3DF import *
 from Edge import *
 from triangle import *
+from polygon import *
 
 class Algorithms:
 
@@ -606,7 +607,63 @@ class Algorithms:
         # Return analyzed DTM
         return dtm
 
+    def hypsometrie(self, dt:list[Edge], cl:list[Edge]):
 
+        pols:list[Polygon] = []
 
+        for ti in range(0, len(dt), 3):
+            p1 = dt[ti].getStart()
+            p2 = dt[ti].getEnd()
+            p3 = dt[ti + 1].getEnd()
 
+            edges_in_polygon:list[Edge] = []
 
+            for cli in range(len(cl)):
+                middlePoint = QPointF((cl[cli].getStart().x() + cl[cli].getEnd().x()) / 2,
+                                 (cl[cli].getStart().y() + cl[cli].getEnd().y()) / 2)
+
+                position = self.getPointPolygonPositionR(middlePoint, [p1, p2, p3])
+
+                if position == 1:
+                    edges_in_polygon.append(cl[cli])
+
+            ed = edges_in_polygon.copy()
+            edges_in_polygon.clear()
+
+            for i in range(len(ed)):
+                zMin = 10000
+                k = 0
+                for edge in ed:
+                    if (edge not in edges_in_polygon) and (edge.getStart().getZ() < zMin):
+                        if edges_in_polygon and k:
+                            edges_in_polygon.pop(0)
+                        zMin = edge.getStart().getZ()
+                        edges_in_polygon.append(edge)
+                        k = 1
+
+            points = [p1, p2, p3]
+            pointPop = []
+
+            for line in edges_in_polygon:
+                print("Ano")
+                pol = [line.getStart(), line.getEnd()]
+                for p in points:
+                    if (p not in pointPop) and (p.getZ() < line.getStart().getZ()):
+                        pol.append(p)
+                        pointPop.append(p)
+
+                pols.append(Polygon(pol, line.getStart().getZ()))
+
+                points.append(line.getStart())
+                points.append(line.getEnd())
+
+                if line == edges_in_polygon[-1]:
+                    pol = [line.getStart(), line.getEnd()]
+                    for p in points:
+                        if (p not in pointPop) and (p.getZ() > line.getStart().getZ()):
+                            pol.append(p)
+                            pointPop.append(p)
+
+                    pols.append(Polygon(pol, pointPop[0].getZ()))
+
+        return pols

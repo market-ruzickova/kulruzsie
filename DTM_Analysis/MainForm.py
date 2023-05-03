@@ -114,6 +114,7 @@ class Ui_MainWindow(object):
         self.actionExit.triggered.connect(self.exit)
         self.actionClear_all.triggered.connect(self.Clear_data)
         self.actionClear_results.triggered.connect(self.Clear_analysis)
+        self.actionParameters.triggered.connect(self.runHypsometrie)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -196,6 +197,12 @@ class Ui_MainWindow(object):
 
         # Set resulzs to draw
         self.Canvas.setAspect(dtm)
+        self.Canvas.repaint()
+
+    def runHypsometrie(self):
+        a = Algorithms()
+
+        self.Canvas.setHypsometrie(a.hypsometrie(self.Canvas.getDT(), self.Canvas.getContours()))
         self.Canvas.repaint()
 
     def Open(self):

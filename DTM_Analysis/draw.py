@@ -9,6 +9,8 @@ import random
 from math import *
 from generate_data import *
 from algorithms import *
+from polygon import *
+
 class Draw(QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -21,6 +23,7 @@ class Draw(QWidget):
         self.__t_contours: list[Edge] = []
         self.__triangles: list[Triangle] = []
         self.__triangles2: list[Triangle] = []
+        self.__pols_hypsometrie: list[Polygon] = []
 
     def mousePressEvent(self, e:QMouseEvent):
         #Left mouse button click
@@ -123,6 +126,15 @@ class Draw(QWidget):
 
             #Draw polygon
             qp.drawPolygon(pol)
+
+        for pol in self.__pols_hypsometrie:
+            col = int(255 / 1000 * pol.get_Z())
+
+            color = QColor(col, 0, 255 - col)
+            qp.setBrush(color)
+
+            qp.drawPolygon(QPolygonF(pol.get_pol()))
+
         # Set attributes
         qp.setPen(Qt.GlobalColor.green)
 
@@ -165,11 +177,18 @@ class Draw(QWidget):
         self.__triangles.clear()
         self.__triangles2 = triangles
 
+    def setHypsometrie(self, polygons : list[Polygon]):
+        self.__pols_hypsometrie.clear()
+        self.__pols_hypsometrie = polygons
+
     def getPoints(self):
         return self.__points
 
     def getDT(self):
         return self.__dt
+
+    def getContours(self):
+        return self.__contours
 
     def input(self):
         g = Generate()
