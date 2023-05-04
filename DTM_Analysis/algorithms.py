@@ -608,28 +608,40 @@ class Algorithms:
         return dtm
 
     def hypsometrie(self, dt:list[Edge], cl:list[Edge]):
-
+        # Colour hypsometric tint
         pols:list[Polygon] = []
 
+        # For each Delaunay triangle
         for ti in range(0, len(dt), 3):
             p1 = dt[ti].getStart()
             p2 = dt[ti].getEnd()
             p3 = dt[ti + 1].getEnd()
 
+            # List of contours in triangle
             edges_in_polygon:list[Edge] = []
 
+            # Set each triangle as it has no contours inside
+            clInPol = False
+
+            # For each contour line
             for cli in range(len(cl)):
+                # Point in the middle of contour line
                 middlePoint = QPointF((cl[cli].getStart().x() + cl[cli].getEnd().x()) / 2,
                                  (cl[cli].getStart().y() + cl[cli].getEnd().y()) / 2)
-
+                # Is middle point inside of triangle being checked?
                 position = self.getPointPolygonPositionR(middlePoint, [p1, p2, p3])
 
+                # If middle point is inside the triangle
                 if position == 1:
+                    # At least one contour line is in the triangle
+                    clInPol = True
+                    # Append the contour line to list of contour lines of this triangle
                     edges_in_polygon.append(cl[cli])
 
             ed = edges_in_polygon.copy()
             edges_in_polygon.clear()
 
+            # Sort contour lines in list from the lowest to the highest
             for i in range(len(ed)):
                 zMin = 10000
                 k = 0
@@ -642,28 +654,46 @@ class Algorithms:
                         k = 1
 
             points = [p1, p2, p3]
+            # List of points already used in a polygon
             pointPop = []
 
+            # For each contour line in triangle
             for line in edges_in_polygon:
-                print("Ano")
+                # Create polygon from start and end point of contour line
                 pol = [line.getStart(), line.getEnd()]
+
                 for p in points:
+                    # If point is not part of already created polygon
+                    # And start point of contour line is greater than z coordinate of point
                     if (p not in pointPop) and (p.getZ() < line.getStart().getZ()):
+                        # Append point to polygon
                         pol.append(p)
+                        # Append point to list of already used points
                         pointPop.append(p)
 
-                pols.append(Polygon(pol, line.getStart().getZ()))
+                # Create convex hull from polygon and append it to list of all polygons
+                pols.append(Polygon(self.createCH(QPolygonF(pol)), line.getStart().getZ()))
 
+                # Append start and end point to list of points
                 points.append(line.getStart())
                 points.append(line.getEnd())
 
+                # The highest contour line in triangle
                 if line == edges_in_polygon[-1]:
                     pol = [line.getStart(), line.getEnd()]
                     for p in points:
+                        # If point is not part of already created polygon
+                        # And start point of contour line is lower than z coordinate of point
                         if (p not in pointPop) and (p.getZ() > line.getStart().getZ()):
                             pol.append(p)
                             pointPop.append(p)
 
-                    pols.append(Polygon(pol, pointPop[0].getZ()))
+                    # Create convex hull from polygon and append it to list of all polygons
+                    pols.append(Polygon(self.createCH(QPolygonF(pol)), pointPop[-1].getZ()))
+
+            # If triangle has no contour line
+            if not clInPol:
+                # Create polygon from this triangle
+                pols.append(Polygon([p1, p2, p3], (p1.getZ() + p2.getZ() + p3.getZ()) / 3))
 
         return pols

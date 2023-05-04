@@ -128,15 +128,16 @@ class Draw(QWidget):
             qp.drawPolygon(pol)
 
         for pol in self.__pols_hypsometrie:
-            col = int(255 / 1000 * pol.get_Z())
+            col = int(200 / 1000 * pol.get_Z())
 
-            color = QColor(col, 0, 255 - col)
+            color = QColor(col, 255 - col, 0)
             qp.setBrush(color)
+            qp.setPen(color)
 
             qp.drawPolygon(QPolygonF(pol.get_pol()))
 
         # Set attributes
-        qp.setPen(Qt.GlobalColor.green)
+        qp.setPen(Qt.GlobalColor.blue)
 
         #Draw triangles
         for edge in self.__dt:
@@ -205,6 +206,7 @@ class Draw(QWidget):
         self.__t_contours.clear()
         self.__triangles.clear()
         self.__triangles2.clear()
+        self.__pols_hypsometrie.clear()
 
     def clearAnalysis(self):
         self.__dt.clear()
@@ -212,3 +214,4 @@ class Draw(QWidget):
         self.__triangles.clear()
         self.__triangles2.clear()
         self.__t_contours.clear()
+        self.__pols_hypsometrie.clear()
