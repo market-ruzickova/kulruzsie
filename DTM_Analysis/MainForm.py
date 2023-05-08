@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.actionAnalyze_aspect.setObjectName("actionAnalyze_aspect")
         self.actionParameters = QtGui.QAction(MainWindow)
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("icons/settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon6.addPixmap(QtGui.QPixmap("icons/contours3.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.actionParameters.setIcon(icon6)
         self.actionParameters.setObjectName("actionParameters")
         self.actionClear_results = QtGui.QAction(MainWindow)
@@ -140,7 +140,7 @@ class Ui_MainWindow(object):
         self.actionAnalyze_aspect.setText(_translate("MainWindow", "Analyze aspect"))
         self.actionAnalyze_aspect.setToolTip(_translate("MainWindow", "Analyze aspect of DTM"))
         self.actionParameters.setText(_translate("MainWindow", "Parameters"))
-        self.actionParameters.setToolTip(_translate("MainWindow", "Setting parameters"))
+        self.actionParameters.setToolTip(_translate("MainWindow", "Color hypsometry"))
         self.actionClear_results.setText(_translate("MainWindow", "Clear results"))
         self.actionClear_all.setText(_translate("MainWindow", "Clear all"))
 
