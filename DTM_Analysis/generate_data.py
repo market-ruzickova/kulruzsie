@@ -71,7 +71,7 @@ class Generate:
                 self.points.append(pi)
 
         # create random points in field with spatial relationship to 3 surrounding points
-        n = s+4+2*int((xm-min)/100)+2*int((ym-min)/100)
+        n = len(self.points)
         while n < max_points:
             x0 = r.randint(min+20, xm-20)+random()*10
             y0 = r.randint(min+20, ym-20)+random()*10

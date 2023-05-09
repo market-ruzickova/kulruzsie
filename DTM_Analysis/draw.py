@@ -1,6 +1,8 @@
 from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
+
+from dialog import *
 from QPoint3DF import *
 from Edge import *
 from triangle import *
@@ -24,6 +26,9 @@ class Draw(QWidget):
         self.__triangles: list[Triangle] = []
         self.__triangles2: list[Triangle] = []
         self.__pols_hypsometrie: list[Polygon] = []
+        self.__zmax = 1000
+        self.__zmin = 0
+        self.__dz = 50
 
     def mousePressEvent(self, e:QMouseEvent):
         #Left mouse button click
@@ -215,3 +220,33 @@ class Draw(QWidget):
         self.__triangles2.clear()
         self.__t_contours.clear()
         self.__pols_hypsometrie.clear()
+
+    def setContourSettings(self):
+        a = Algorithms()
+        dialog = InputDialog()
+        if dialog.exec():
+            zmin,zmax,dz = dialog.getInputs()
+            try:
+                zmin = int(zmin)
+                zmax = int(zmax)
+                dz = int(dz)
+                self.__zmin = zmin
+                self.__zmax = zmax
+                self.__dz = dz
+            except ValueError:
+                zmin, zmax,dz = a.setContourDefaultSettings()
+                self.contourInvalidInput()
+                self.__zmin = zmin
+                self.__zmax = zmax
+                self.__dz = dz
+        else:
+            return
+
+    def getContourParameters(self):
+        return self.__zmin, self.__zmax, self.__dz
+
+    def contourInvalidInput(self):
+        dlg = QMessageBox()
+        dlg.setWindowTitle("Wrong Input")
+        dlg.setText("Invalid input. Use integer for custom settings. Default settings will be applied(0,1000,50).")
+        dlg.exec()

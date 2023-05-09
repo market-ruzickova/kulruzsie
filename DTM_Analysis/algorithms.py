@@ -697,3 +697,6 @@ class Algorithms:
                 pols.append(Polygon([p1, p2, p3], (p1.getZ() + p2.getZ() + p3.getZ()) / 3))
 
         return pols
+
+    def setContourDefaultSettings(self):
+        return 0,1000,50

@@ -69,7 +69,7 @@ class Ui_MainWindow(object):
         self.actionAnalyze_aspect.setObjectName("actionAnalyze_aspect")
         self.actionParameters = QtGui.QAction(MainWindow)
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("icons/contours3.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon6.addPixmap(QtGui.QPixmap("icons/settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.actionParameters.setIcon(icon6)
         self.actionParameters.setObjectName("actionParameters")
         self.actionClear_results = QtGui.QAction(MainWindow)
@@ -80,6 +80,11 @@ class Ui_MainWindow(object):
         self.actionClear_all = QtGui.QAction(MainWindow)
         self.actionClear_all.setIcon(icon7)
         self.actionClear_all.setObjectName("actionClear_all")
+        self.actionHypsometry = QtGui.QAction(MainWindow)
+        icon8 = QtGui.QIcon()
+        icon8.addPixmap(QtGui.QPixmap("icons/contours3.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.actionHypsometry.setIcon(icon8)
+        self.actionHypsometry.setObjectName("actionHypsometry")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExit)
@@ -87,6 +92,7 @@ class Ui_MainWindow(object):
         self.menuAnalysis.addAction(self.actionCreate_contour_lines)
         self.menuAnalysis.addAction(self.actionAnalyze_slope)
         self.menuAnalysis.addAction(self.actionAnalyze_aspect)
+        self.menuAnalysis.addAction(self.actionHypsometry)
         self.menuSettings.addAction(self.actionParameters)
         self.menuView.addAction(self.actionClear_results)
         self.menuView.addAction(self.actionClear_all)
@@ -100,6 +106,7 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionCreate_contour_lines)
         self.toolBar.addAction(self.actionAnalyze_slope)
         self.toolBar.addAction(self.actionAnalyze_aspect)
+        self.toolBar.addAction(self.actionHypsometry)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionParameters)
         self.toolBar.addSeparator()
@@ -114,7 +121,8 @@ class Ui_MainWindow(object):
         self.actionExit.triggered.connect(self.exit)
         self.actionClear_all.triggered.connect(self.Clear_data)
         self.actionClear_results.triggered.connect(self.Clear_analysis)
-        self.actionParameters.triggered.connect(self.runHypsometrie)
+        self.actionParameters.triggered.connect(self.settings)
+        self.actionHypsometry.triggered.connect(self.runHypsometrie)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -140,7 +148,9 @@ class Ui_MainWindow(object):
         self.actionAnalyze_aspect.setText(_translate("MainWindow", "Analyze aspect"))
         self.actionAnalyze_aspect.setToolTip(_translate("MainWindow", "Analyze aspect of DTM"))
         self.actionParameters.setText(_translate("MainWindow", "Parameters"))
-        self.actionParameters.setToolTip(_translate("MainWindow", "Color hypsometry"))
+        self.actionParameters.setToolTip(_translate("MainWindow", "Parameters"))
+        self.actionHypsometry.setText(_translate("MainWindow", "Color hypsometry"))
+        self.actionHypsometry.setToolTip(_translate("MainWindow", "Color hypsometry"))
         self.actionClear_results.setText(_translate("MainWindow", "Clear results"))
         self.actionClear_all.setText(_translate("MainWindow", "Clear all"))
 
@@ -158,9 +168,7 @@ class Ui_MainWindow(object):
 
     def runContourLines(self):
         # Set parameters of contour lines
-        zmin = 0
-        zmax = 1650
-        dz = 50
+        zmin, zmax, dz = self.Canvas.getContourParameters()
         DZ = dz*5
 
         # Get DT
@@ -220,6 +228,9 @@ class Ui_MainWindow(object):
     def Clear_analysis(self):
         ui.Canvas.clearAnalysis()
         self.Canvas.repaint()
+
+    def settings(self):
+        self.Canvas.setContourSettings()
 
 if __name__ == "__main__":
     import sys
