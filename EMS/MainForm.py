@@ -8,6 +8,7 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 from algorithms import *
+from load import Load as LoadSHP
 
 
 class Ui_MainWindow(object):
@@ -18,6 +19,7 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.Load = QtWidgets.QFileDialog(MainWindow)
         self.Canvas = Draw(self.centralwidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
@@ -101,6 +103,7 @@ class Ui_MainWindow(object):
         self.actionElement.triggered.connect(self.drawLineClick)
         self.actionBarrier.triggered.connect(self.drawBarrierClick)
         self.actionClear.triggered.connect(self.clearClick)
+        self.actionOpen.triggered.connect(self.load)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -114,7 +117,7 @@ class Ui_MainWindow(object):
         self.menuSimplify.setTitle(_translate("MainWindow", "Simplify"))
         self.menuOptions.setTitle(_translate("MainWindow", "Options"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
-        self.actionOpen.setText(_translate("MainWindow", "Open"))
+        self.actionOpen.setText(_translate("MainWindow", "Load barrier, then element"))
         self.actionElement.setText(_translate("MainWindow", "Element"))
         self.actionBarrier.setText(_translate("MainWindow", "Barrier"))
         self.actionDisplace_1_element.setText(_translate("MainWindow", "Displace 1 element"))
@@ -153,6 +156,19 @@ class Ui_MainWindow(object):
 
     def clearClick(self):
         self.Canvas.clearAll()
+        self.Canvas.repaint()
+
+    def load(self):
+        data = LoadSHP(self.Load.getOpenFileName()[0])
+        data.readPolyline()
+        for p in data.number():
+            self.Canvas.setL(data.getPol(p))
+
+        data = LoadSHP(self.Load.getOpenFileName()[0])
+        data.readPolyline()
+        for p in data.number():
+            self.Canvas.setB(data.getPol(p))
+
         self.Canvas.repaint()
 
 

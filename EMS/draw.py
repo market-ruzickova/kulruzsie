@@ -13,6 +13,9 @@ class Draw(QWidget):
         self.__B = QPolygonF()
         self.__LD = QPolygonF()
 
+        self.__LLoad = []
+        self.__BLoad = []
+
         self.__add_vertex = True
 
         #p1 = QPointF(0, 150)
@@ -64,11 +67,17 @@ class Draw(QWidget):
         #Draw L
         qp.drawPolyline(self.__L)
 
+        for p in range(len(self.__LLoad)):
+            qp.drawPolyline(self.__LLoad[p])
+
         # Set attributes
         qp.setPen(Qt.GlobalColor.blue)
 
         # Draw B
         qp.drawPolyline(self.__B)
+
+        for p in range(len(self.__BLoad)):
+            qp.drawPolyline(self.__BLoad[p])
 
         # Set attributes
         qp.setPen(Qt.GlobalColor.red)
@@ -91,6 +100,12 @@ class Draw(QWidget):
 
     def setLD(self, LD_):
         self.__LD = LD_
+
+    def setL(self, L):
+        self.__LLoad.append(L)
+
+    def setB(self, B):
+        self.__BLoad.append(B)
 
     def setSource(self, status):
         self.__add_L = status
