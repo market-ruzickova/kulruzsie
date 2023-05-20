@@ -15,6 +15,7 @@ class Draw(QWidget):
 
         self.__LLoad = []
         self.__BLoad = []
+        self.__LDLoad = []
 
         self.__add_vertex = True
 
@@ -85,6 +86,9 @@ class Draw(QWidget):
         # Draw LD
         qp.drawPolyline(self.__LD)
 
+        for p in range(len(self.__LDLoad)):
+            qp.drawPolyline(self.__LDLoad[p])
+
         #End draw
         qp.end()
 
@@ -98,8 +102,17 @@ class Draw(QWidget):
     def getB(self):
         return self.__B
 
+    def getLLoad(self):
+        return self.__LLoad
+
+    def getBLoad(self):
+        return self.__BLoad
+
     def setLD(self, LD_):
         self.__LD = LD_
+
+    def setLDLoad(self, LDLoad):
+        self.__LDLoad = LDLoad
 
     def setL(self, L):
         self.__LLoad.append(L)
@@ -114,4 +127,8 @@ class Draw(QWidget):
         self.__L.clear()
         self.__B.clear()
         self.__LD.clear()
+
+        self.__LLoad.clear()
+        self.__BLoad.clear()
+        self.__LDLoad.clear()
 

@@ -140,10 +140,21 @@ class Ui_MainWindow(object):
         #Run displacement
         a = Algorithms()
         d, xq, yq = a.getPointLineDistance(100, 100, 0, 100, 100, 90)
-        LD = a.minEnergySpline(L, B, alpha, beta, gamma, lam, dmin, iters)
+        if L and B:
+            LD = a.minEnergySpline(L, B, alpha, beta, gamma, lam, dmin, iters)
+            self.Canvas.setLD(LD)
+
+        L = self.Canvas.getLLoad()
+        B = self.Canvas.getBLoad()
+        LDLoad = []
+
+        for pL in L:
+            for pB in B:
+                LDLoad.append(a.minEnergySpline(pL, pB, alpha, beta, gamma, lam, dmin, iters))
+
 
         #Set results
-        self.Canvas.setLD(LD)
+        self.Canvas.setLDLoad(LDLoad)
 
         #Repaint
         self.Canvas.repaint()
@@ -159,15 +170,13 @@ class Ui_MainWindow(object):
         self.Canvas.repaint()
 
     def load(self):
-        data = LoadSHP(self.Load.getOpenFileName()[0])
+        data = LoadSHP(self.Load.getOpenFileName()[0], self.Load.getOpenFileName()[0])
         data.readPolyline()
-        for p in data.number():
-            self.Canvas.setL(data.getPol(p))
+        for p in data.numberBarr():
+            self.Canvas.setL(data.getPolyBarr(p))
 
-        data = LoadSHP(self.Load.getOpenFileName()[0])
-        data.readPolyline()
-        for p in data.number():
-            self.Canvas.setB(data.getPol(p))
+        for p in data.numberElem():
+            self.Canvas.setB(data.getPolyElem(p))
 
         self.Canvas.repaint()
 
