@@ -9,7 +9,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from algorithms import *
 from load import Load as LoadSHP
-
+from draw import *
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -104,6 +104,7 @@ class Ui_MainWindow(object):
         self.actionBarrier.triggered.connect(self.drawBarrierClick)
         self.actionClear.triggered.connect(self.clearClick)
         self.actionOpen.triggered.connect(self.load)
+        self.actionSettings.triggered.connect(self.settings)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
@@ -130,12 +131,7 @@ class Ui_MainWindow(object):
         B = self.Canvas.getB()
 
         # Set parameters
-        dmin = 100
-        alpha = 0.3
-        beta = 1000
-        gamma = 1000
-        lam = 20
-        iters = 500
+        dmin, alpha, beta, gamma, lam, iters = self.Canvas.getSettings()
 
         #Run displacement
         a = Algorithms()
@@ -180,8 +176,11 @@ class Ui_MainWindow(object):
 
         self.Canvas.repaint()
 
+    def settings(self):
+        self.Canvas.setSettings()
 
-from draw import Draw
+
+
 
 
 if __name__ == "__main__":

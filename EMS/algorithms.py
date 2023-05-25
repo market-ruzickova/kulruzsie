@@ -738,7 +738,8 @@ class Algorithms:
 
         return LD
 
-
+    def setDefaultSettings(self):
+        return 100,0.3,1000,1000,20,500
 
 
 

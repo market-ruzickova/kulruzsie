@@ -2,6 +2,10 @@ from PyQt6.QtCore import *
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 
+from algorithms import *
+from dialog import *
+
+
 class Draw(QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -18,6 +22,13 @@ class Draw(QWidget):
         self.__LDLoad = []
 
         self.__add_vertex = True
+
+        self.dmin = 100
+        self.alpha = 0.3
+        self.beta = 1000
+        self.gamma = 1000
+        self.lam = 20
+        self.iters = 500
 
         #p1 = QPointF(0, 150)
         #p2 = QPointF(100, 100)
@@ -132,3 +143,41 @@ class Draw(QWidget):
         self.__BLoad.clear()
         self.__LDLoad.clear()
 
+    def setSettings(self):
+        a = Algorithms()
+        dialog = InputDialog()
+        if dialog.exec():
+            dmin, alpha, beta, gamma, lam, iters = dialog.getInputs()
+            try:
+                dmin = int(dmin)
+                alpha = float(alpha)
+                beta = int(beta)
+                gamma = int(gamma)
+                lam = int(lam)
+                iters = int(iters)
+                self.dmin = dmin
+                self.alpha = alpha
+                self.beta = beta
+                self.gamma = gamma
+                self.lam = lam
+                self.iters = iters
+            except ValueError:
+                dmin, alpha, beta, gamma, lam, iters = a.setDefaultSettings()
+                self.InvalidInput()
+                self.dmin = dmin
+                self.alpha = alpha
+                self.beta = beta
+                self.gamma = gamma
+                self.lam = lam
+                self.iters = iters
+        else:
+            return
+
+    def getSettings(self):
+        return self.dmin, self.alpha, self.beta, self.gamma, self.lam, self.iters
+
+    def InvalidInput(self):
+        dlg = QMessageBox()
+        dlg.setWindowTitle("Wrong Input")
+        dlg.setText("Invalid input. Use integer for custom settings (except for alpha coefficient). Default settings will be applied.")
+        dlg.exec()
