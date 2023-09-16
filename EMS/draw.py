@@ -30,6 +30,8 @@ class Draw(QWidget):
         self.lam = 20
         self.iters = 500
 
+        self.firstLoadedDataPath = ""
+
         #p1 = QPointF(0, 150)
         #p2 = QPointF(100, 100)
         #p3 = QPointF(200, 150)

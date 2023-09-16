@@ -47,11 +47,16 @@ class Ui_MainWindow(object):
         self.toolBar = QtWidgets.QToolBar(MainWindow)
         self.toolBar.setObjectName("toolBar")
         MainWindow.addToolBar(QtCore.Qt.ToolBarArea.TopToolBarArea, self.toolBar)
-        self.actionOpen = QtGui.QAction(MainWindow)
+        self.actionOpenBarr = QtGui.QAction(MainWindow)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("icons/open_file.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
-        self.actionOpen.setIcon(icon)
-        self.actionOpen.setObjectName("actionOpen")
+        self.actionOpenBarr.setIcon(icon)
+        self.actionOpenBarr.setObjectName("actionOpenBarr")
+        self.actionOpenElem = QtGui.QAction(MainWindow)
+        icon0 = QtGui.QIcon()
+        icon0.addPixmap(QtGui.QPixmap("icons/open_file.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        self.actionOpenElem.setIcon(icon0)
+        self.actionOpenElem.setObjectName("actionOpenElem")
         self.actionElement = QtGui.QAction(MainWindow)
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap("icons/element.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
@@ -77,7 +82,8 @@ class Ui_MainWindow(object):
         icon5.addPixmap(QtGui.QPixmap("icons/settings.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.actionSettings.setIcon(icon5)
         self.actionSettings.setObjectName("actionSettings")
-        self.menuFile.addAction(self.actionOpen)
+        self.menuFile.addAction(self.actionOpenBarr)
+        self.menuFile.addAction(self.actionOpenElem)
         self.menuElement.addAction(self.actionElement)
         self.menuElement.addAction(self.actionBarrier)
         self.menuSimplify.addAction(self.actionDisplace_1_element)
@@ -88,7 +94,8 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menuElement.menuAction())
         self.menubar.addAction(self.menuSimplify.menuAction())
         self.menubar.addAction(self.menuOptions.menuAction())
-        self.toolBar.addAction(self.actionOpen)
+        self.toolBar.addAction(self.actionOpenBarr)
+        self.toolBar.addAction(self.actionOpenElem)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionElement)
         self.toolBar.addAction(self.actionBarrier)
@@ -103,7 +110,8 @@ class Ui_MainWindow(object):
         self.actionElement.triggered.connect(self.drawLineClick)
         self.actionBarrier.triggered.connect(self.drawBarrierClick)
         self.actionClear.triggered.connect(self.clearClick)
-        self.actionOpen.triggered.connect(self.load)
+        self.actionOpenBarr.triggered.connect(self.loadBarr)
+        self.actionOpenElem.triggered.connect(self.loadElem)
         self.actionSettings.triggered.connect(self.settings)
 
         self.retranslateUi(MainWindow)
@@ -112,13 +120,14 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Minimal-energy splines"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuElement.setTitle(_translate("MainWindow", "Input"))
         self.menuSimplify.setTitle(_translate("MainWindow", "Simplify"))
         self.menuOptions.setTitle(_translate("MainWindow", "Options"))
         self.toolBar.setWindowTitle(_translate("MainWindow", "toolBar"))
-        self.actionOpen.setText(_translate("MainWindow", "Load barrier, then element"))
+        self.actionOpenBarr.setText(_translate("MainWindow", "Load barrier"))
+        self.actionOpenElem.setText(_translate("MainWindow", "Load element"))
         self.actionElement.setText(_translate("MainWindow", "Element"))
         self.actionBarrier.setText(_translate("MainWindow", "Barrier"))
         self.actionDisplace_1_element.setText(_translate("MainWindow", "Displace 1 element"))
@@ -164,16 +173,46 @@ class Ui_MainWindow(object):
     def clearClick(self):
         self.Canvas.clearAll()
         self.Canvas.repaint()
+        self.Canvas.firstLoadedDataPath = ""
 
-    def load(self):
-        data = LoadSHP(self.Load.getOpenFileName()[0], self.Load.getOpenFileName()[0])
-        data.readPolyline()
-        for p in data.numberBarr():
-            self.Canvas.setL(data.getPolyBarr(p))
+    def loadBarr(self):
+        pathBarr = self.Load.getOpenFileName()[0]
+        data = LoadSHP(pathBarr, self.Canvas.firstLoadedDataPath)
 
-        for p in data.numberElem():
-            self.Canvas.setB(data.getPolyElem(p))
+        if (self.Canvas.firstLoadedDataPath != ""):
+            self.Canvas.clearAll()
+            data.readPolyline2()
+            for p in data.numberBarr():
+                self.Canvas.setB(data.getPolyBarr(p))
 
+            for p in data.numberElem():
+                self.Canvas.setL(data.getPolyElem(p))
+        else:
+            data.readPolyline1()
+            for p in data.numberBarr():
+                self.Canvas.setB(data.getPolyBarr(p))
+
+        self.Canvas.firstLoadedDataPath = pathBarr
+        self.Canvas.repaint()
+
+    def loadElem(self):
+        pathElem = self.Load.getOpenFileName()[0]
+        data = LoadSHP(pathElem, self.Canvas.firstLoadedDataPath)
+
+        if (self.Canvas.firstLoadedDataPath != ""):
+            self.Canvas.clearAll()
+            data.readPolyline2()
+            for p in data.numberBarr():
+                self.Canvas.setL(data.getPolyBarr(p))
+
+            for p in data.numberElem():
+                self.Canvas.setB(data.getPolyElem(p))
+        else:
+            data.readPolyline1()
+            for p in data.numberBarr():
+                self.Canvas.setL(data.getPolyBarr(p))
+
+        self.Canvas.firstLoadedDataPath = pathElem
         self.Canvas.repaint()
 
     def settings(self):
