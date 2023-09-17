@@ -54,7 +54,7 @@ class Ui_MainWindow(object):
         self.actionOpenBarr.setObjectName("actionOpenBarr")
         self.actionOpenElem = QtGui.QAction(MainWindow)
         icon0 = QtGui.QIcon()
-        icon0.addPixmap(QtGui.QPixmap("icons/open_file.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon0.addPixmap(QtGui.QPixmap("icons/open_file2.png"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         self.actionOpenElem.setIcon(icon0)
         self.actionOpenElem.setObjectName("actionOpenElem")
         self.actionElement = QtGui.QAction(MainWindow)
